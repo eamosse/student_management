@@ -9,8 +9,8 @@ let mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 //mongoose.set('debug', true);
 
-// TODO remplacer toute cette chaine par l'URI de connexion à votre propre base dans le cloud
-const uri = '...';
+// URI de connexion à la base MongoDB dans le cloud
+const uri = 'mongodb+srv://admin:admin@cluster0.mbrnsmf.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
 
 const options = {};
 
@@ -36,25 +36,29 @@ app.use(bodyParser.json());
 
 let port = process.env.PORT || 8010;
 
-// les routes
+
 const prefix = '/api';
 
 app.route(prefix + '/students')
-    .get(student.getAll)
-    .post(student.create);
+    .get(student.getAll)    
+    .post(student.create);  
 
+app.route(prefix + '/students/:id_student')
+    .put(student.update)    
+    .delete(student.deleteStudent);  
+
+// Routes pour les cours
 app.route(prefix + '/courses')
-    .get(course.getAll)
-    .post(course.create);
+    .get(course.getAll)    
+    .post(course.create);  
 
+// Routes pour les notes
 app.route(prefix + '/grades')
-    .get(grade.getAll)
-    .post(grade.create);
+    .get(grade.getAll)    
+    .post(grade.create);   
 
-// On démarre le serveur
-app.listen(port, "0.0.0.0");
-console.log('Serveur démarré sur http://localhost:' + port);
+app.listen(port, "0.0.0.0", () => {
+    console.log('Serveur démarré sur http://localhost:' + port);
+});
 
 module.exports = app;
-
-
