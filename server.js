@@ -10,7 +10,7 @@ mongoose.Promise = global.Promise;
 //mongoose.set('debug', true);
 
 // TODO remplacer toute cette chaine par l'URI de connexion à votre propre base dans le cloud
-const uri = '...';
+const uri = 'mongodb+srv://mongo:mongo@cluster0.0eg4dqv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
 
 const options = {};
 
@@ -50,6 +50,9 @@ app.route(prefix + '/courses')
 app.route(prefix + '/grades')
     .get(grade.getAll)
     .post(grade.create);
+app.route(prefix + '/grades/:id')
+    .put(grade.edit)
+    .delete(grade.deleteById)
 
 // On démarre le serveur
 app.listen(port, "0.0.0.0");
