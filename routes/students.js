@@ -39,7 +39,7 @@ function update(req, res) {
         });
 }
 
-function delete(req, res) {
+function deleteStudent(req, res) {
     const { studentId } = req.params;
 
     Student.findByIdAndDelete(studentId)
@@ -54,4 +54,4 @@ function delete(req, res) {
         });
 }
 
-module.exports = {getAll, create, update, delete};
+module.exports = {getAll, create, update, deleteStudent};
