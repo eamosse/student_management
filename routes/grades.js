@@ -48,7 +48,7 @@ function update(req, res) {
         });
 }
 
-function delete(req, res) {
+function deleteGrade(req, res) {
     const { gradeId } = req.params;
 
     Grade.findByIdAndDelete(gradeId)
@@ -63,4 +63,4 @@ function delete(req, res) {
         });
 }
 
-module.exports = { getAll, create, update, delete };
+module.exports = { getAll, create, update, deleteGrade };
