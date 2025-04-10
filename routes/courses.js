@@ -23,4 +23,36 @@ function create(req, res) {
     });
 }
 
-module.exports = {getAll, create};
+function update(req, res) {
+    const { courseId } = req.params;
+    const { name, code } = req.body;
+
+    Course.findByIdAndUpdate(courseId, { name, code }, { new: true })
+        .then((updatedCourse) => {
+            if (!updatedCourse) {
+                return res.status(404).send('Course not found!');
+            }
+            res.json({ message: `Course updated with id ${updatedCourse.id}`, course: updatedCourse });
+        })
+        .catch((err) => {
+            res.send('Error updating course ', err);
+        });
+}
+
+function delete(req, res) {
+    const { courseId } = req.params;
+
+    Course.findByIdAndDelete(courseId)
+        .then((deletedCourse) => {
+            if (!deletedCourse) {
+                return res.status(404).send('Course not found!');
+            }
+            res.json({ message: `Course deleted with id ${deletedCourse.id}` });
+        })
+        .catch((err) => {
+            res.send('Error deleting course ', err);
+        });
+}
+
+// Exporte les fonctions
+module.exports = { getAll, create, update, delete };
