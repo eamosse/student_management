@@ -39,7 +39,7 @@ function update(req, res) {
         });
 }
 
-function delete(req, res) {
+function deleteCourse(req, res) {
     const { courseId } = req.params;
 
     Course.findByIdAndDelete(courseId)
@@ -55,4 +55,4 @@ function delete(req, res) {
 }
 
 // Exporte les fonctions
-module.exports = { getAll, create, update, delete };
+module.exports = { getAll, create, update, deleteCourse };
