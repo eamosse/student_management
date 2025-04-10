@@ -23,4 +23,35 @@ function create(req, res) {
     });
 }
 
-module.exports = {getAll, create};
+function update(req, res) {
+    const { studentId } = req.params; 
+    const { firstName, lastName } = req.body;
+
+    Student.findByIdAndUpdate(studentId, { firstName, lastName }, { new: true })
+        .then((updatedStudent) => {
+            if (!updatedStudent) {
+                return res.status(404).send('Student not found!');
+            }
+            res.json({ message: `Student updated with id ${updatedStudent.id}`, student: updatedStudent });
+        })
+        .catch((err) => {
+            res.send('Error updating student ', err);
+        });
+}
+
+function delete(req, res) {
+    const { studentId } = req.params;
+
+    Student.findByIdAndDelete(studentId)
+        .then((deletedStudent) => {
+            if (!deletedStudent) {
+                return res.status(404).send('Student not found!');
+            }
+            res.json({ message: `Student deleted with id ${deletedStudent.id}` });
+        })
+        .catch((err) => {
+            res.send('Error deleting student ', err);
+        });
+}
+
+module.exports = {getAll, create, update, delete};
