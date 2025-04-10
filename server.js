@@ -41,15 +41,22 @@ const prefix = '/api';
 
 app.route(prefix + '/students')
     .get(student.getAll)
-    .post(student.create);
+    .post(student.create)
+    .put(student.update)
+    .delete(student.deleteStudent);
 
 app.route(prefix + '/courses')
     .get(course.getAll)
-    .post(course.create);
+    .post(course.create)
+    .put(course.update)
+    .delete(course.deleteCourse);
 
 app.route(prefix + '/grades')
     .get(grade.getAll)
-    .post(grade.create);
+    .post(grade.create)
+    .put(grade.update)
+    .delete(grade.deleteGrade);
+
 
 // On démarre le serveur
 app.listen(port, "0.0.0.0");
