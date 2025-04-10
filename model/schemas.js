@@ -4,6 +4,7 @@ let Schema = mongoose.Schema;
 let StudentSchema = Schema({
     firstName: String,
     lastName: String,
+    id_student: Number,
 });
 
 let student = mongoose.model('Student', StudentSchema);
