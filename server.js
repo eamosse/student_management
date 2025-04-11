@@ -27,6 +27,11 @@ app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+
+    if (req.method === 'OPTIONS') {
+        return res.sendStatus(200);
+    }
+
     next();
 });
 
@@ -51,6 +56,10 @@ app.route(prefix + '/students/:id_student')
 app.route(prefix + '/courses')
     .get(course.getAll)    
     .post(course.create);  
+
+app.route(prefix + '/courses/:id')
+    .put(course.update)    
+    .delete(course.deleteCourse);
 
 // Routes pour les notes
 app.route(prefix + '/grades')
