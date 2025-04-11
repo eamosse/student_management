@@ -16,27 +16,14 @@ const options = {};
 
 mongoose.connect(uri, options)
     .then(() => {
-        console.log("✅ Connexion à la base OK");
-
-        // Activer les logs des requêtes MongoDB
         mongoose.set('debug', true);
-
-        // Afficher le nom de la base utilisée
         const dbName = mongoose.connection.name;
-        console.log("📂 Base de données utilisée :", dbName);
+        console.log("Connexion à la base OK :", dbName);
     })
     .catch(err => {
-        console.log('❌ Erreur de connexion: ', err);
+        console.log('Erreur de connexion: ', err);
     });
 
-/*mongoose.connect(uri, options)
-    .then(() => {
-            console.log("Connexion à la base OK");
-        },
-        err => {
-            console.log('Erreur de connexion: ', err);
-        });
-*/
 // Pour accepter les connexions cross-domain (CORS)
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
