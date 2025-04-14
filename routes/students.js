@@ -23,4 +23,43 @@ function create(req, res) {
     });
 }
 
-module.exports = {getAll, create};
+function update(req, res) {
+    const id = req.params.id
+
+    Student.findByIdAndUpdate(id, {...req.body})
+        .then(() => {
+            res.json({message: `student updated with id ${id}`})
+        })
+        .catch((err) => {
+            res.send(`can't update student `, err)
+        })
+}
+
+function deleteStudent(req, res) {
+    const id = req.params.id
+
+    Student.deleteOne({_id: id})
+        .then(() => {
+            res.json({message: `student deleted with id ${id}`})
+        })
+        .catch((err) => {
+            res.send(`can't delete student `, err)
+        })
+}
+
+function getById(req, res) {
+    const id = req.params.id;
+
+    Student.findById(id)
+        .then((student) => {
+            if (!student) {
+                return res.status(404).send('Student not found');
+            }
+            res.send(student);
+        })
+        .catch((err) => {
+            res.status(500).send(`Error retrieving student: ${err.message}`);
+        });
+}
+
+module.exports = {getAll, create, update, deleteStudent, getById};
