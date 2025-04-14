@@ -30,4 +30,45 @@ function create(req, res) {
     });
 }
 
-module.exports = {getAll, create};
+function update(req, res) {
+    const id = req.params.id
+
+    Grade.findByIdAndUpdate(id, {...req.body})
+        .then(() => {
+            res.json({message: `grade updated with id ${id}`})
+        })
+        .catch((err) => {
+            res.send(`can't update grade `, err)
+        })
+}
+
+function deleteGrade(req, res) {
+    const id = req.params.id
+
+    Grade.deleteOne({_id: id})
+        .then(() => {
+            res.json({message: `grade deleted with id ${id}`})
+        })
+        .catch((err) => {
+            res.send(`can't delete grade `, err)
+        })
+}
+
+function getById(req, res) {
+    const id = req.params.id;
+
+    Grade.findById(id)
+        .populate('student')
+        .populate('course')
+        .then((grade) => {
+            if (!grade) {
+                return res.status(404).send('Grade not found');
+            }
+            res.send(grade);
+        })
+        .catch((err) => {
+            res.status(500).send(`Error retrieving grade: ${err.message}`);
+        });
+}
+
+module.exports = {getAll, create, update, deleteGrade, getById};

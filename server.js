@@ -10,9 +10,11 @@ mongoose.Promise = global.Promise;
 //mongoose.set('debug', true);
 
 // TODO remplacer toute cette chaine par l'URI de connexion à votre propre base dans le cloud
-const uri = '...';
+const uri = 'mongodb+srv://user-admin:Mot2passe@uploaderdb.npsgo8p.mongodb.net/?retryWrites=true&w=majority&appName=uploaderDB';
 
-const options = {};
+const options = {
+    dbName: "studentManagement"
+};
 
 mongoose.connect(uri, options)
     .then(() => {
@@ -43,13 +45,28 @@ app.route(prefix + '/students')
     .get(student.getAll)
     .post(student.create);
 
+app.route(prefix + '/students/:id')
+    .get(student.getById)
+    .put(student.update)
+    .delete(student.deleteStudent)
+
 app.route(prefix + '/courses')
     .get(course.getAll)
     .post(course.create);
 
+app.route(prefix + '/courses/:id')
+    .get(course.getById)
+    .put(course.update)
+    .delete(course.deleteCourse)
+
 app.route(prefix + '/grades')
     .get(grade.getAll)
     .post(grade.create);
+
+app.route(prefix + '/students/:id')
+    .get(grade.getById)
+    .put(grade.update)
+    .delete(grade.deleteGrade)
 
 // On démarre le serveur
 app.listen(port, "0.0.0.0");

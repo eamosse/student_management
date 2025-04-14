@@ -23,4 +23,43 @@ function create(req, res) {
     });
 }
 
-module.exports = {getAll, create};
+function update(req, res) {
+    const id = req.params.id
+
+    Course.findByIdAndUpdate(id, {...req.body})
+        .then(() => {
+            res.json({message: `course updated with id ${id}`})
+        })
+        .catch((err) => {
+            res.send(`can't update course `, err)
+        })
+}
+
+function deleteCourse(req, res) {
+    const id = req.params.id
+
+    Course.deleteOne({_id: id})
+        .then(() => {
+            res.json({message: `course deleted with id ${id}`})
+        })
+        .catch((err) => {
+            res.send(`can't delete course `, err)
+        })
+}
+
+function getById(req, res) {
+    const id = req.params.id;
+
+    Course.findById(id)
+        .then((course) => {
+            if (!course) {
+                return res.status(404).send('Course not found');
+            }
+            res.send(course);
+        })
+        .catch((err) => {
+            res.status(500).send(`Error retrieving course: ${err.message}`);
+        });
+}
+
+module.exports = {getAll, create, update, deleteCourse, getById};
