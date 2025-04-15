@@ -24,10 +24,11 @@ function create(req, res) {
 }
 
 function update(req, res) {
-    const { studentId } = req.params; 
+    //const { studentId } = req.params; 
+    const { id } = req.params; 
     const { firstName, lastName } = req.body;
 
-    Student.findByIdAndUpdate(studentId, { firstName, lastName }, { new: true })
+    Student.findByIdAndUpdate(id, { firstName, lastName }, { new: true })
         .then((updatedStudent) => {
             if (!updatedStudent) {
                 return res.status(404).send('Student not found!');
@@ -40,11 +41,14 @@ function update(req, res) {
 }
 
 function deleteStudent(req, res) {
-    const { studentId } = req.params;
+   // const { studentId } = req.params;
+    const { id } = req.params;
 
-    Student.findByIdAndDelete(studentId)
+    Student.findByIdAndDelete(id)
         .then((deletedStudent) => {
             if (!deletedStudent) {
+                console.log("studentId : ",id);
+                
                 return res.status(404).send('Student not found!');
             }
             res.json({ message: `Student deleted with id ${deletedStudent.id}` });
