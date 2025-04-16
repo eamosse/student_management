@@ -24,11 +24,13 @@ function create(req, res) {
 }
 
 function update(req, res) {
-    const { courseId } = req.params;
+    //console.log(req.params.id);
+    const courseId = req.params.id;
     const { name, code } = req.body;
 
     Course.findByIdAndUpdate(courseId, { name, code }, { new: true })
         .then((updatedCourse) => {
+            //console.log(updatedCourse , courseId);
             if (!updatedCourse) {
                 return res.status(404).send('Course not found!');
             }
@@ -40,7 +42,7 @@ function update(req, res) {
 }
 
 function deleteCourse(req, res) {
-    const { courseId } = req.params;
+    const courseId = req.params.id;
 
     Course.findByIdAndDelete(courseId)
         .then((deletedCourse) => {
