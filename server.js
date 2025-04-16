@@ -9,18 +9,20 @@ let mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 //mongoose.set('debug', true);
 
-// TODO remplacer toute cette chaine par l'URI de connexion à votre propre base dans le cloud
-const uri = '...';
+
+const uri = 'mongodb+srv://saotrarahajason:SaotraRahajason15@cluster0.dxhunkx.mongodb.net/student-managment?retryWrites=true&w=majority&appName=Cluster0';
 
 const options = {};
 
 mongoose.connect(uri, options)
     .then(() => {
-            console.log("Connexion à la base OK");
-        },
-        err => {
-            console.log('Erreur de connexion: ', err);
-        });
+        mongoose.set('debug', true);
+        const dbName = mongoose.connection.name;
+        console.log("Connexion à la base OK :", dbName);
+    })
+    .catch(err => {
+        console.log('Erreur de connexion: ', err);
+    });
 
 // Pour accepter les connexions cross-domain (CORS)
 app.use(function (req, res, next) {
@@ -42,14 +44,24 @@ const prefix = '/api';
 app.route(prefix + '/students')
     .get(student.getAll)
     .post(student.create);
+app.route(prefix + '/students/:id')
+    .put(student.update)
+    .delete(student.deleteStudent);
 
 app.route(prefix + '/courses')
     .get(course.getAll)
     .post(course.create);
+app.route(prefix + '/courses/:id')
+    .put(course.update)
+    .delete(course.deleteCourse);
 
 app.route(prefix + '/grades')
     .get(grade.getAll)
     .post(grade.create);
+app.route(prefix + '/grades/:id')
+    .put(grade.update)
+    .delete(grade.deleteGrade);
+
 
 // On démarre le serveur
 app.listen(port, "0.0.0.0");
