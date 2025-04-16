@@ -1,4 +1,5 @@
 let {Course} = require('../model/schemas');
+const { getPaginatedResults } = require('../utils/paginationUtils');
 
 function getAll(req, res) {
     Course.find().then((classes) => {
@@ -7,8 +8,15 @@ function getAll(req, res) {
         res.send(err);
     });
 }
-
-
+function getPagination(req, res) {
+    getPaginatedResults(Course, req)
+        .then((paginationData) => {
+            res.json(paginationData);
+        })
+        .catch((err) => {
+            res.status(500).send(err.message);
+        });
+}
 function create(req, res) {
     let course = new Course();
     course.name = req.body.name;
@@ -62,4 +70,4 @@ function getById(req, res) {
         });
 }
 
-module.exports = {getAll, create, update, deleteCourse, getById};
+module.exports = {getAll,getPagination, create, update, deleteCourse, getById};
