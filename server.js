@@ -10,8 +10,8 @@ mongoose.Promise = global.Promise;
 //mongoose.set('debug', true);
 
 // TODO remplacer toute cette chaine par l'URI de connexion à votre propre base dans le cloud
-// const uri = 'mongodb+srv://user-admin:Mot2passe@uploaderdb.npsgo8p.mongodb.net/?retryWrites=true&w=majority&appName=uploaderDB';
-const uri = "mongodb://127.0.0.1/"
+const uri = 'mongodb+srv://user-admin:Mot2passe@uploaderdb.npsgo8p.mongodb.net/?retryWrites=true&w=majority&appName=uploaderDB';
+// const uri = "mongodb://127.0.0.1/"
 const options = {
     dbName: "studentManagement"
 };
