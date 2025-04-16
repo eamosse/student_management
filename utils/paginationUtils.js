@@ -7,17 +7,16 @@ function getPaginationParams(req) {
     return { skip, limit, page };
 }
 
-async function getPaginatedResults(Model, req) {
+async function getPaginatedResults(Model, req, populateFields = []) {
     const { skip, limit, page } = getPaginationParams(req);
 
     try {
-        // Récupère les éléments paginés
-        const results = await Model.find()
-            .skip(skip)
-            .limit(limit)
-            .exec();
+        let query = Model.find().skip(skip).limit(limit);
+        populateFields.forEach(field => {
+            query = query.populate(field);
+        });
 
-        // Récupère le nombre total d'éléments pour le calcul des pages
+        const results = await query.exec();
         const totalItems = await Model.countDocuments();
 
         return {
@@ -30,5 +29,4 @@ async function getPaginatedResults(Model, req) {
         throw new Error(`Error fetching paginated results: ${err.message}`);
     }
 }
-
 module.exports = { getPaginatedResults };

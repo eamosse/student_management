@@ -10,14 +10,14 @@ function getAll(req, res) {
         res.send(err);
     });
 }
-function getPagination(req, res) {
-    getPaginatedResults(Grade, req)
-        .then((paginationData) => {
-            res.json(paginationData);
-        })
-        .catch((err) => {
-            res.status(500).send(err.message);
-        });
+async function getPagination(req, res) {
+    try {
+        const data = await getPaginatedResults(Grade, req, ['student', 'course']);
+        res.json(data);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Erreur serveur' });
+    }
 }
 
 function create(req, res) {
