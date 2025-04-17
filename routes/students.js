@@ -70,4 +70,30 @@ function getById(req, res) {
         });
 }
 
-module.exports = {getAll, getPagination, create, update, deleteStudent, getById};
+function exportToCSV(req, res) {
+    Student.find()
+        .then((students) => {
+            // Ajouter le BOM UTF-8 pour Excel
+            let csv = '\uFEFF';
+            
+            // Créer l'en-tête CSV
+            csv += 'ID;Prénom;Nom\n';
+            
+            // Ajouter chaque étudiant comme une ligne CSV
+            students.forEach(student => {
+                csv += `${student._id};${student.firstName};${student.lastName}\n`;
+            });
+
+            // Définir les en-têtes de la réponse
+            res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+            res.setHeader('Content-Disposition', 'attachment; filename=students.csv');
+            
+            // Envoyer le fichier CSV
+            res.send(csv);
+        })
+        .catch((err) => {
+            res.status(500).send(`Error exporting students: ${err.message}`);
+        });
+}
+
+module.exports = {getAll, getPagination, create, update, deleteStudent, getById, exportToCSV};
