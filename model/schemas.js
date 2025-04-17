@@ -12,7 +12,7 @@ let courseSchema = Schema({
     name: String,
     code: String,
 });
-
+    
 let Course = mongoose.model('Course', courseSchema);
 
 let gradeSchema = Schema({
