@@ -31,7 +31,8 @@ function create(req, res) {
 }
 
 function update(req, res) {
-    const { gradeId } = req.params.id;
+    // const { gradeId } = req.params.id;
+    const gradeId = req.params.id;
     const { student, course, grade, date } = req.body;
 
     Grade.findByIdAndUpdate(gradeId, { student, course, grade, date }, { new: true })
@@ -49,7 +50,8 @@ function update(req, res) {
 }
 
 function deleteGrade(req, res) {
-    const { gradeId } = req.params.id;
+    // const { gradeId } = req.params.id;
+    const gradeId = req.params.id;
 
     Grade.findByIdAndDelete(gradeId)
         .then((deletedGrade) => {
