@@ -25,7 +25,7 @@ mongoose.connect(uri, options)
         });
 
 // Pour accepter les connexions cross-domain (CORS)
-app.use(function (req, res, next) {
+app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
@@ -33,7 +33,7 @@ app.use(function (req, res, next) {
 });
 
 // Pour les formulaires
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 let port = process.env.PORT || 8010;
@@ -52,6 +52,9 @@ app.route(prefix + '/students/:id')
     .get(student.getById)
     .put(student.update)
     .delete(student.deleteStudent)
+
+app.route(prefix + '/students/report/:id')
+    .get(student.getStudentReport)
 
 app.route(prefix + '/courses')
     .get(course.getAll)
@@ -77,7 +80,7 @@ app.route(prefix + '/course/pagination')
 
 app.route(prefix + '/student/pagination')
     .get(student.getPagination);
-    
+
 app.route(prefix + '/grade/pagination')
     .get(grade.getPagination);
 
@@ -86,5 +89,3 @@ app.listen(port, "0.0.0.0");
 console.log('Serveur démarré sur http://localhost:' + port);
 
 module.exports = app;
-
-

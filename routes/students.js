@@ -1,5 +1,6 @@
-let {Student} = require('../model/schemas');
+let { Student, Grade } = require('../model/schemas');
 const { getPaginatedResults } = require('../utils/paginationUtils');
+
 function getAll(req, res) {
     Student.find().then((students) => {
         res.send(students);
@@ -17,6 +18,7 @@ function getPagination(req, res) {
             res.status(500).send(err.message);
         });
 }
+
 function create(req, res) {
     let student = new Student();
     student.firstName = req.body.firstName;
@@ -24,19 +26,18 @@ function create(req, res) {
 
     student.save()
         .then((student) => {
-                res.json({message: `student saved with id ${student.id}!`});
-            }
-        ).catch((err) => {
-        res.send('cant post student ', err);
-    });
+            res.json({ message: `student saved with id ${student.id}!` });
+        }).catch((err) => {
+            res.send('cant post student ', err);
+        });
 }
 
 function update(req, res) {
     const id = req.params.id
 
-    Student.findByIdAndUpdate(id, {...req.body})
+    Student.findByIdAndUpdate(id, {...req.body })
         .then(() => {
-            res.json({message: `student updated with id ${id}`})
+            res.json({ message: `student updated with id ${id}` })
         })
         .catch((err) => {
             res.send(`can't update student `, err)
@@ -46,9 +47,9 @@ function update(req, res) {
 function deleteStudent(req, res) {
     const id = req.params.id
 
-    Student.deleteOne({_id: id})
+    Student.deleteOne({ _id: id })
         .then(() => {
-            res.json({message: `student deleted with id ${id}`})
+            res.json({ message: `student deleted with id ${id}` })
         })
         .catch((err) => {
             res.send(`can't delete student `, err)
@@ -75,10 +76,10 @@ function exportToCSV(req, res) {
         .then((students) => {
             // Ajouter le BOM UTF-8 pour Excel
             let csv = '\uFEFF';
-            
+
             // Créer l'en-tête CSV
             csv += 'ID;Prénom;Nom\n';
-            
+
             // Ajouter chaque étudiant comme une ligne CSV
             students.forEach(student => {
                 csv += `${student._id};${student.firstName};${student.lastName}\n`;
@@ -87,7 +88,7 @@ function exportToCSV(req, res) {
             // Définir les en-têtes de la réponse
             res.setHeader('Content-Type', 'text/csv; charset=utf-8');
             res.setHeader('Content-Disposition', 'attachment; filename=students.csv');
-            
+
             // Envoyer le fichier CSV
             res.send(csv);
         })
@@ -96,4 +97,43 @@ function exportToCSV(req, res) {
         });
 }
 
-module.exports = {getAll, getPagination, create, update, deleteStudent, getById, exportToCSV};
+function getStudentReport(req, res) {
+    const studentId = req.params.id;
+
+    Student.findById(studentId)
+        .then((student) => {
+            if (!student) {
+                return res.status(404).send('Student not found');
+            }
+
+            return Grade.find({ student: studentId }).populate('course')
+                .then((grades) => {
+                    const average = grades.length > 0 ?
+                        (grades.reduce((sum, g) => sum + g.grade, 0) / grades.length).toFixed(2) :
+                        null;
+
+                    const report = {
+                        student: {
+                            id: student._id,
+                            firstName: student.firstName,
+                            lastName: student.lastName,
+                        },
+                        grades: grades.map((g) => ({
+                            courseName: g.course.name,
+                            courseCode: g.course.code,
+                            grade: g.grade,
+                            date: g.date,
+                        })),
+                        average: average,
+                    };
+
+                    res.send(report);
+                });
+        })
+        .catch((err) => {
+            res.status(500).send(`Error generating bulletin: ${err.message}`);
+        });
+}
+
+
+module.exports = { getAll, getPagination, create, update, deleteStudent, getById, exportToCSV, getStudentReport };
