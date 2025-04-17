@@ -45,6 +45,9 @@ app.route(prefix + '/students')
     .get(student.getAll)
     .post(student.create);
 
+app.route(prefix + '/students/exportCsv')
+    .post(student.exportToCSV)
+
 app.route(prefix + '/students/:id')
     .get(student.getById)
     .put(student.update)
