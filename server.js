@@ -4,6 +4,7 @@ let bodyParser = require('body-parser');
 let student = require('./routes/students');
 let course = require('./routes/courses');
 let grade = require('./routes/grades');
+const statisticsRoutes = require('./routes/statistics');
 
 let mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
@@ -45,9 +46,6 @@ app.route(prefix + '/students')
     .get(student.getAll)
     .post(student.create);
 
-app.route(prefix + '/students/exportCsv')
-    .post(student.exportToCSV)
-
 app.route(prefix + '/students/:id')
     .get(student.getById)
     .put(student.update)
@@ -83,6 +81,8 @@ app.route(prefix + '/student/pagination')
 
 app.route(prefix + '/grade/pagination')
     .get(grade.getPagination);
+
+app.use(prefix + '/statistics', statisticsRoutes);
 
 // On démarre le serveur
 app.listen(port, "0.0.0.0");

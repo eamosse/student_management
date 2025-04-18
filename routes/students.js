@@ -1,4 +1,4 @@
-let { Student, Grade } = require('../model/schemas');
+let { Grade, Student, Course } = require('../model');
 const { getPaginatedResults } = require('../utils/paginationUtils');
 
 function getAll(req, res) {
