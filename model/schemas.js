@@ -2,8 +2,15 @@ let mongoose = require('mongoose');
 let Schema = mongoose.Schema;
 
 let StudentSchema = Schema({
-    firstName: String,
-    lastName: String,
+    firstName: { type: String, required: true },
+    lastName: { type: String, required: true },
+},{
+    toJSON: {
+        transform: function (doc, ret) {
+            delete ret.__v;
+            return ret;
+        }
+    }
 });
 
 let student = mongoose.model('Student', StudentSchema);
@@ -23,8 +30,19 @@ let gradeSchema = Schema({
 });
 let Grade = mongoose.model('Grade', gradeSchema);
 
+let userSchema = new Schema({
+    nom: String,
+    prenom: String,
+    email: { type: String, unique: true },
+    motDePasse: String,
+    role: { type: String, enum: ['etudiant', 'enseignant', 'admin'], default: 'etudiant' }
+});
+
+let User = mongoose.model('User', userSchema);
+
 // Exports the modeles
 module.exports = {
+    User: User,
     Student: student,
     Course: Course,
     Grade: Grade,
