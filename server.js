@@ -1,5 +1,6 @@
 let express = require('express');
 let cors = require('cors');
+let cookieParser = require('cookie-parser');
 let app = express();
 let bodyParser = require('body-parser');
 let userHelper = require('./helper/userHelper');
@@ -28,6 +29,7 @@ mongoose.connect(uri, options)
             console.log('Erreur de connexion: ', err);
         });
 
+app.use(cookieParser()); 
 // Pour accepter les connexions cross-domain (CORS)
 app.use(function (req, res, next) {
     // res.header("Access-Control-Allow-Origin", "*");
@@ -55,25 +57,34 @@ let oauthServer = new OAuth2Server({
 
 app.route('/oauth/login')
     .post(oauth.getToken(oauthServer));
+app.route('/oauth/logout')
+    .post(oauth.logout);
 // app.use('/api', oauth.secure(oauthServer));
 
 // les routes
 const prefix = '/api';
+let secure = oauth.secure(oauthServer, ['etudiant']);
 
 app.route(prefix + '/students')
     .get(student.getAll)
-    .post(oauth.secure(oauthServer), student.create);
+    .post(secure, student.create);
+app.route(prefix + '/students/:id')
+    .delete(secure, student.deleteStudent)
+    .put(secure, student.updateStudent); 
 
 app.route(prefix + '/courses')
     .get(course.getAll)
-    .post(course.create);
+    .post(secure, course.create);
+app.route(prefix + '/courses/:id')
+    .put(secure, course.edit)
+    .delete(secure, course.deleteById);
 
 app.route(prefix + '/grades')
     .get(grade.getAll)
-    .post(grade.create);
+    .post(secure, grade.create);
 app.route(prefix + '/grades/:id')
-    .put(grade.edit)
-    .delete(grade.deleteById)
+    .put(secure, grade.edit)
+    .delete(secure, grade.deleteById);
 
 // On démarre le serveur
 app.listen(port, "0.0.0.0");
