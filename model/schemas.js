@@ -30,19 +30,8 @@ let gradeSchema = Schema({
 });
 let Grade = mongoose.model('Grade', gradeSchema);
 
-let userSchema = new Schema({
-    nom: String,
-    prenom: String,
-    email: { type: String, unique: true },
-    motDePasse: String,
-    role: { type: String, enum: ['etudiant', 'enseignant', 'admin'], default: 'etudiant' }
-});
-
-let User = mongoose.model('User', userSchema);
-
 // Exports the modeles
 module.exports = {
-    User: User,
     Student: student,
     Course: Course,
     Grade: Grade,
