@@ -13,7 +13,7 @@ function getToken(oauth) {
             .then(token => {
                 res.cookie('token', token.accessToken, {
                     httpOnly: true,
-                    secure: false,
+                    secure: process.env.NODE_ENV === 'production',
                     sameSite: 'lax',
                     maxAge: 3600000
                 });
@@ -25,16 +25,24 @@ function getToken(oauth) {
     }
 }
 
-function secure(oauth) {
+function secure(oauth, rolesNotAllowed = ['etudiant']) {
     return (req, res, next) => {
+        if (req.cookies && req.cookies.token) {
+            req.headers.Authorization = 'Bearer ' + req.cookies.token;
+        }
+
         const request = new Request(req);
         const response = new Response(res);
-    
+
         //authenticate the request based on the token within the request
         oauth
             .authenticate(request, response)
             .then((token) => {
-                console.log(token);
+                console.log(rolesNotAllowed);
+                if (rolesNotAllowed.includes(token.user.role)) {
+                    return res.status(403).json({ message: `Forbidden: ${rolesNotAllowed} not allowed` });
+                }
+
                 next();
             })
             .catch((err) => {
@@ -43,4 +51,13 @@ function secure(oauth) {
     };
 }
 
-module.exports = { getToken, secure };
+function logout(req, res, next) {
+    res.clearCookie('token', { 
+        httpOnly: true, 
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax'
+    });
+    res.status(200).json({ message: 'Logged out' });
+}
+
+module.exports = { getToken, secure, logout };
