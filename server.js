@@ -4,6 +4,8 @@ let bodyParser = require('body-parser');
 let student = require('./routes/students');
 let course = require('./routes/courses');
 let grade = require('./routes/grades');
+let studentStatsRouter = require('./routes/studentStats');
+const adminStatsRouter = require('./routes/adminStats');
 
 let mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
@@ -61,6 +63,9 @@ app.route(prefix + '/grades')
 app.route(prefix + '/grades/:id')
     .put(grade.update)
     .delete(grade.deleteGrade);
+
+app.use(prefix +'/studentstats', studentStatsRouter);
+app.use(prefix +'/adminstats', adminStatsRouter);
 
 
 // On démarre le serveur
