@@ -23,9 +23,20 @@ let gradeSchema = Schema({
 });
 let Grade = mongoose.model('Grade', gradeSchema);
 
+let userSchema = Schema({
+    nom: { type: String, required: true },
+    identifiant: { type: String, required: true, unique: true },
+    motDePasse: { type: String, required: true },
+    role: { type: String, enum: ['ADMIN', 'SCOLARITE', 'STUDENT'], required: true },
+    connexion: { type: Number, default: 0 }
+  });
+  
+  let User = mongoose.model('User', userSchema, 'User');
+
 // Exports the modeles
 module.exports = {
     Student: student,
     Course: Course,
     Grade: Grade,
+    User: User
 }
