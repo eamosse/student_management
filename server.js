@@ -4,6 +4,7 @@ let bodyParser = require('body-parser');
 let student = require('./routes/students');
 let course = require('./routes/courses');
 let grade = require('./routes/grades');
+let authentification = require('./routes/authentification');
 let studentStatsRouter = require('./routes/studentStats');
 const adminStatsRouter = require('./routes/adminStats');
 
@@ -63,6 +64,9 @@ app.route(prefix + '/grades')
 app.route(prefix + '/grades/:id')
     .put(grade.update)
     .delete(grade.deleteGrade);
+
+app.route(prefix + '/auth')
+    .post(authentification.insertProfil);
 
 app.use(prefix +'/studentstats', studentStatsRouter);
 app.use(prefix +'/adminstats', adminStatsRouter);
