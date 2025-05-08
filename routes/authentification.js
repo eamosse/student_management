@@ -36,6 +36,41 @@ function insertProfil(req, res) {
     });
 }
 
+function insertProfilGmail(req, res) {
+  const { nom, identifiant, motDePasse, role } = req.body;
+
+  if (!nom || !identifiant || !motDePasse || !role) {
+    return res.status(400).json({ message: 'Tous les champs sont requis.' });
+  }
+
+  User.findOne({ identifiant })
+    .then(existingUser => {
+      if (existingUser) {
+        return res.status(400).json({ message: 'Identifiant déjà utilisé.' });
+      }
+
+      return bcrypt.hash(motDePasse, 10);
+    })
+    .then(hashedPassword => {
+      const newUser = new User({
+        nom,
+        identifiant,
+        motDePasse: hashedPassword,
+        role,
+        connexion: 1
+      });
+
+      return newUser.save();
+    })
+    .then(() => {
+      res.status(201).json({ message: 'Profil utilisateur ajouté avec succès.' });
+    })
+    .catch(error => {
+      console.error(error);
+      res.status(500).json({ message: 'Erreur lors de l\'ajout du profil.', error: error.message });
+    });
+}
+
 function loginUser(req, res) {
     const { identifiant, motDePasse } = req.body;
 
@@ -60,21 +95,13 @@ function loginUser(req, res) {
             if (!isMatch) {
               return res.status(401).json({ message: 'Mot de passe incorrect.' });
             }
-            
-            console.log("Utilisateur trouvé et connecté :", {
-                id: user._id,
-                nom: user.nom,
-                identifiant: user.identifiant,
-                role: user.role,
-                connexion: user.connexion
-              });
-            
+
             // Si la connexion est réussie, renvoie les informations de l'utilisateur
             return res.status(200).json({
               id: user._id,
               nom: user.nom,
               identifiant: user.identifiant,
-              role: user.role,
+              type: user.role,
               connexion: user.connexion
             });
           });
@@ -88,9 +115,10 @@ function loginUser(req, res) {
 
   function changePassword(req, res) {
     const { identifiant, oldPassword, newPassword } = req.body;
-  
+    
     // Vérification que tous les champs sont présents
     if (!identifiant || !oldPassword || !newPassword) {
+      console.log("ato",identifiant);
       return res.status(400).json({ message: 'Tous les champs sont requis.' });
     }
   
@@ -113,17 +141,19 @@ function loginUser(req, res) {
         return bcrypt.hash(newPassword, 10);
       })
       .then(hashedPassword => {
+        console.log("VOICI REQ ",req.body)
         // Mettre à jour le mot de passe de l'utilisateur
         return User.findOneAndUpdate(
           { identifiant: req.body.identifiant },
-          { motDePasse: hashedPassword },
+          { motDePasse: hashedPassword,connexion:1 },
           { new: true }
         );
       })
       .then(updatedUser => {
         // Retourner le rôle de l'utilisateur après la mise à jour du mot de passe
+        console.log(updatedUser)
         res.status(200).json({
-          message: 'Mot de passe modifié avec succès.',
+          //message: 'Mot de passe modifié avec succès.',
           userRole: updatedUser.role // On renvoie le rôle de l'utilisateur
         });
       })
@@ -133,4 +163,4 @@ function loginUser(req, res) {
       });
   }
 
-module.exports = { insertProfil, loginUser, changePassword };
+module.exports = { insertProfil, loginUser, changePassword, insertProfilGmail };
