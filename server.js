@@ -68,6 +68,15 @@ app.route(prefix + '/grades/:id')
 app.route(prefix + '/auth')
     .post(authentification.insertProfil);
 
+    app.route(prefix + '/authGmail')
+    .post(authentification.insertProfilGmail);
+
+app.route(prefix + '/auth/login')
+    .post(authentification.loginUser);
+
+app.route(prefix + '/changepassword')
+    .post(authentification.changePassword);
+
 app.use(prefix +'/studentstats', studentStatsRouter);
 app.use(prefix +'/adminstats', adminStatsRouter);
 
