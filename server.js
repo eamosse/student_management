@@ -8,6 +8,7 @@ let OAuth2Server = require('oauth2-server');
 
 let oauth = require('./routes/auth');
 let student = require('./routes/students');
+let user = require('./routes/users');
 let course = require('./routes/courses');
 let grade = require('./routes/grades');
 
@@ -37,6 +38,7 @@ app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
     next();
 });
+
 app.use(cors({
     origin: 'http://localhost:5173',
     credentials: true
@@ -64,6 +66,13 @@ app.route('/oauth/logout')
 // les routes
 const prefix = '/api';
 let secure = oauth.secure(oauthServer, ['etudiant']);
+
+app.route(prefix + '/users')
+    .get(user.getAll)
+    .post(secure, user.create);
+app.route(prefix + '/users/:id')
+    .delete(secure, user.deleteById)
+    .put(secure, user.edit); 
 
 app.route(prefix + '/students')
     .get(student.getAll)
