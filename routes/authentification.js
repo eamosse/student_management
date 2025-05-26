@@ -1,10 +1,11 @@
-let { User } = require('../model/schemas');
+let { Student, User } = require('../model/schemas');
+let mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
 function insertProfil(req, res) {
-  const { nom, identifiant, motDePasse, role } = req.body;
+  const { nom, prenom, identifiant, motDePasse, role } = req.body;
 
-  if (!nom || !identifiant || !motDePasse || !role) {
+  if (!nom || !prenom || !identifiant || !motDePasse || !role) {
     return res.status(400).json({ message: 'Tous les champs sont requis.' });
   }
 
@@ -17,7 +18,10 @@ function insertProfil(req, res) {
       return bcrypt.hash(motDePasse, 10);
     })
     .then(hashedPassword => {
+      const userId = new mongoose.Types.ObjectId();
+
       const newUser = new User({
+        _id: userId,
         nom,
         identifiant,
         motDePasse: hashedPassword,
@@ -25,7 +29,23 @@ function insertProfil(req, res) {
         connexion: 0
       });
 
-      return newUser.save();
+      return newUser.save().then(savedUser => ({ savedUser, userId }));
+    })
+    .then(({ savedUser, userId }) => {
+      if (role === 'STUDENT') {
+        const firstName = nom;
+        const lastName = prenom;
+
+        const newStudent = new Student({
+          _id: userId, 
+          firstName,
+          lastName
+        });
+
+        return newStudent.save();
+      }
+
+      return null;
     })
     .then(() => {
       res.status(201).json({ message: 'Profil utilisateur ajouté avec succès.' });
@@ -35,6 +55,7 @@ function insertProfil(req, res) {
       res.status(500).json({ message: 'Erreur lors de l\'ajout du profil.', error: error.message });
     });
 }
+
 
 function insertProfilGmail(req, res) {
   const { nom, identifiant, motDePasse, role } = req.body;
