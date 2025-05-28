@@ -10,6 +10,6 @@ RUN npm config set strict-ssl true
 
 COPY . .
 
-EXPOSE 8010
+EXPOSE 3000
 
 CMD ["npm", "start"]
