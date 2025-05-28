@@ -1,8 +1,8 @@
-let {Grade, Student, Course} = require('../model/schemas');
+let {Grade} = require('../model/schemas');
 
 function getAll(req, res) {
     Grade.find()
-        .populate('student')
+        .populate('user')
         .populate('course')
         .then((grades) => {
             res.send(grades);
@@ -15,7 +15,7 @@ function getAll(req, res) {
 function create(req, res) {
     let grade = new Grade();
 
-    grade.student = req.body.student;
+    grade.user = req.body.user;
     grade.course = req.body.course;
     grade.grade = req.body.grade;
     grade.date = req.body.date;
@@ -32,7 +32,7 @@ function create(req, res) {
 
 function edit(req, res) {
     const updatedGrade = {
-        student: req.body.student,
+        user: req.body.user,
         course: req.body.course,
         grade: req.body.grade,
         date: req.body.date,
