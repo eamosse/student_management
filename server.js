@@ -82,10 +82,14 @@ app.route(prefix + '/courses/:id')
 
 app.route(prefix + '/grades')
     .get(grade.getAll)
-    .post(secure, grade.create);
+    .post(secure, grade.create)
+    .delete(secure, grade.deleteAllGrades)
 app.route(prefix + '/grades/:id')
     .put(secure, grade.edit)
     .delete(secure, grade.deleteById);
+
+app.route(prefix + '/studentcourse/:id')
+    .get(secure, grade.getCoursesForStudent)
 
 // On démarre le serveur
 app.listen(port, "0.0.0.0");
