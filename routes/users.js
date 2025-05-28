@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 let {User} = require('../model/userSchema');
+const {Course} = require("../model/schemas");
 
 function getAll(req, res) {
     User.find().then((users) => {

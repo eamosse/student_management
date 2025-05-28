@@ -7,7 +7,6 @@ let userHelper = require('./helper/userHelper');
 let OAuth2Server = require('oauth2-server');
 
 let oauth = require('./routes/auth');
-let student = require('./routes/students');
 let user = require('./routes/users');
 let course = require('./routes/courses');
 let grade = require('./routes/grades');
@@ -40,7 +39,7 @@ app.use(function (req, res, next) {
 });
 
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: ['http://localhost:5173','http://localhost:5174'],
     credentials: true
 }));
 
@@ -72,14 +71,7 @@ app.route(prefix + '/users')
     .post(secure, user.create);
 app.route(prefix + '/users/:id')
     .delete(secure, user.deleteById)
-    .put(secure, user.edit); 
-
-app.route(prefix + '/students')
-    .get(student.getAll)
-    .post(secure, student.create);
-app.route(prefix + '/students/:id')
-    .delete(secure, student.deleteStudent)
-    .put(secure, student.updateStudent); 
+    .put(secure, user.edit);
 
 app.route(prefix + '/courses')
     .get(course.getAll)
