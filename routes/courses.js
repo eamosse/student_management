@@ -23,4 +23,41 @@ function create(req, res) {
     });
 }
 
-module.exports = {getAll, create};
+function edit(req, res) {
+    const courseId = req.params.id;
+
+    Course.findById(courseId)
+        .then((course) => {
+            if (!course) {
+                return res.status(404).json({ message: 'Course not found' });
+            }
+
+            course.name = req.body.name || course.name;
+            course.code = req.body.code || course.code;
+
+            return course.save();
+        })
+        .then((updatedCourse) => {
+            res.json({ message: `Course with id ${updatedCourse.id} updated successfully!` });
+        })
+        .catch((err) => {
+            res.status(500).send('Error updating course: ' + err);
+        });
+}
+
+function deleteById (req, res) {
+    const courseId = req.params.id;
+
+    Course.findByIdAndDelete(courseId)
+        .then((deletedCourse) => {
+            if (!deletedCourse) {
+                return res.status(404).json({ message: 'Course not found' });
+            }
+            res.json({ message: `Course with id ${deletedCourse.id} deleted successfully!` });
+        })
+        .catch((err) => {
+            res.status(500).send('Error deleting course: ' + err);
+        });
+}
+
+module.exports = {getAll, create , edit , deleteById};
