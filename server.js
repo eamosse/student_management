@@ -8,6 +8,8 @@ let grade = require('./routes/grades');
 let authentification = require('./routes/authentification');
 let studentStatsRouter = require('./routes/studentStats');
 const adminStatsRouter = require('./routes/adminStats');
+
+let studentDetails = require('./routes/studentDetails');
 let app = express();
 
 mongoose.Promise = global.Promise;
@@ -66,6 +68,7 @@ app.route(prefix + '/students')
     .get(student.getAll)
     .post(student.create);
 app.route(prefix + '/students/:id')
+    .get(student.getById)
     .put(student.update)
     .delete(student.deleteStudent);
 
@@ -98,6 +101,14 @@ app.route(prefix + '/changepassword')
 app.use(prefix +'/studentstats', studentStatsRouter);
 app.use(prefix +'/adminstats', adminStatsRouter);
 
+app.route(prefix + '/users')
+    .get(authentification.getAll);
+
+app.route(prefix + '/student-grades/:id')
+    .get(studentDetails.getGradesByStudent);
+
+app.route(prefix + '/student-courses/:id')
+    .get(studentDetails.getCourseByStudent);
 
 // On démarre le serveur
 app.listen(PORT, '0.0.0.0', () => {
