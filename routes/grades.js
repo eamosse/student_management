@@ -64,4 +64,22 @@ function deleteById(req, res) {
         });
 }
 
-module.exports = {getAll, create, edit, deleteById};
+const getCoursesForStudent = async (req, res) => {
+    try {
+        const grades = await Grade.find({ user: req.params.id }).populate('course');
+
+        const courses = grades.map(g => g.course);
+
+        const uniqueCourses = Array.from(
+            new Map(courses.map(c => [c._id.toString(), c])).values()
+        );
+
+        res.status(200).json(uniqueCourses);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Erreur lors de la récupération des cours." });
+    }
+};
+
+
+module.exports = {getAll, create, edit, deleteById , getCoursesForStudent  };
