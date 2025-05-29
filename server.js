@@ -44,7 +44,7 @@ mongoose.connect(uri, options)
 
 const cors = require('cors');
 
-const allowedOrigin = process.env.CLIENT_URL || '*';
+const allowedOrigin = process.env.CLIENT_URL;
 
 app.use(cors({
   origin: allowedOrigin,
