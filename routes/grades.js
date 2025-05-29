@@ -82,17 +82,4 @@ const getCoursesForStudent = async (req, res) => {
 };
 
 
-function deleteAllGrades() {
-    try {
-        const result = Grade.deleteMany({});
-        return result;
-    } catch (err) {
-        console.error('Erreur lors de la suppression des notes :', err);
-        throw err;
-    }
-}
-
-
-
-
-module.exports = {getAll, create, edit, deleteById , getCoursesForStudent , deleteAllGrades };
+module.exports = {getAll, create, edit, deleteById , getCoursesForStudent  };
