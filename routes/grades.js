@@ -1,7 +1,7 @@
 let {Grade} = require('../model/schemas');
 
 function getAll(req, res) {
-    Grade.find()
+    Grade.find({ grade: { $ne: null } })
         .populate('user')
         .populate('course')
         .then((grades) => {

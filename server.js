@@ -90,6 +90,9 @@ app.route(prefix + '/grades/:id')
 app.route(prefix + '/studentcourse/:id')
     .get(secure, grade.getCoursesForStudent)
 
+app.route( prefix + '/students')
+    .get(user.getAllStudent);
+
 // On démarre le serveur
 app.listen(port, "0.0.0.0");
 console.log('Serveur démarré sur http://localhost:' + port);

@@ -9,6 +9,17 @@ function getAll(req, res) {
     });
 }
 
+function getAllStudent (req, res) {
+    User.find({ role: 'etudiant' })
+        .then((students) => {
+            res.json(students);
+        })
+        .catch((err) => {
+            console.error("Erreur lors de la récupération des étudiants :", err);
+            res.status(500).json({ error: "Impossible de récupérer les étudiants" });
+        });
+}
+
 
 function create(req, res) {
     let user = new User();
@@ -72,4 +83,4 @@ function deleteById(req, res) {
         });
 }
 
-module.exports = {getAll, create, edit, deleteById};
+module.exports = {getAll, create, edit, deleteById , getAllStudent };
